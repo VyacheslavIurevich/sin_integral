@@ -1,4 +1,4 @@
-TARGET = inetgrate_sin
+TARGET = integrate_sin
 SRC_DIR = src
 OBJ_DIR = obj
 CFLAGS = -Wall -Wextra -pedantic -Werror -O2
