@@ -4,23 +4,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-static double integrate_rectangle_rule(struct borders *segment) {
+static double integrate_rectangle_rule(borders_t *segment) {
   return (segment->right - segment->left) *
          sin((segment->left + segment->right) / 2);
 }
 
-static double integrate_simpsons_rule(struct borders *segment) {
+static double integrate_simpsons_rule(borders_t *segment) {
   double border_sum = segment->right + segment->left;
   double border_diff = segment->right - segment->left;
   return border_diff / 6 *
          (sin(segment->left) + 4 * sin((border_sum) / 2) + sin(segment->right));
 }
 
-static double integrate(struct borders *segment, uint16_t partition_size,
-                        double (*method)(struct borders *)) {
+static double integrate(borders_t *segment, uint16_t partition_size,
+                        double (*method)(borders_t *)) {
   double integral_value = 0.0;
   double part_length = (segment->right - segment->left) / partition_size;
-  struct borders part = {segment->left, 0.0};
+  borders_t part = {segment->left, 0.0};
   for (uint16_t rectangle_num = 0; rectangle_num < partition_size;
        ++rectangle_num) {
     part.right = part.left + part_length;
@@ -30,7 +30,7 @@ static double integrate(struct borders *segment, uint16_t partition_size,
   return integral_value;
 }
 
-static char **calculate_integrals(struct borders *segment, uint8_t results_len,
+static char **calculate_integrals(borders_t *segment, uint8_t results_len,
                                   uint16_t *partition_sizes) {
   char **calculation_results = (char **)malloc(sizeof(char *) * results_len);
   if (!calculation_results) {
@@ -67,8 +67,8 @@ static void free_results(char **calculation_results, unsigned int len) {
   free(calculation_results);
 }
 
-static struct borders read_interval() {
-  struct borders segment;
+static borders_t read_interval() {
+  borders_t segment;
   printf("Enter the left border of the interval: ");
   if (scanf("%lf", &(segment.left)) != 1) {
     fprintf(stderr, "Can't read the left border of the interval\n");
@@ -96,7 +96,7 @@ static struct borders read_interval() {
 }
 
 int main() {
-  struct borders segment = read_interval();
+  borders_t segment = read_interval();
   size_t experiments_count = 6;
   uint16_t partition_sizes[] = PARTITION_SIZES;
   char **calculation_results =
